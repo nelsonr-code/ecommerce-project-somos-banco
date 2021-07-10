@@ -25,3 +25,5 @@ yarn-error.log*
 /src/assets/styles/index.css
 
 .env
+API/__pycache__
+src/assets/styles/index.css
