@@ -90,8 +90,6 @@ def register():
         connectDatabase()
 
 
-
-
 @app.route('/consultar', methods=['GET']) #Consultar Cuentas (clientes y TCred)
 def consultar():
     return msg_banco
