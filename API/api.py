@@ -44,7 +44,7 @@ def login():
                 FROM tblcustomer as c
                 WHERE (c.customer_email) = (%(email)s) """
     try:
-        db.execute(sql, {'email':email, 'passw':passw})
+        db.execute(sql, {'email':email})
         result = db.fetchone()
         print(result)
         if(result):
@@ -75,24 +75,28 @@ def register():
     #print("PASSW: "+passw)
     name = json['name']
     phone = json['phone']
-    sql = """INSERT INTO  tblcustomer (id_customer,name_customer,customer_phone,customer_email,password)
-             VALUES (DEFAULT, %(name)s,%(phone)s,%(email)s,%(passw)s)             
-    """
-    try:
-        db.execute(sql, {'email':email, 'passw':passwHash, 'name':name, 'phone':phone})
-        conn.commit()
-        #sql = """ SELECT * FROM tblcustomer 
-        #          ORDER BY id_customer DESC
-        #          LIMIT 1 
-        #"""
-        #result = db.fetchone()
-        response = {"message":"success"}
-        return jsonify(response), 200
-
-    except Exception as e:
-        print("error at /registrar:")
-        print (e)
-        connectDatabase()
+    sql = """   SELECT id_customer 
+                    FROM tblcustomer as c
+                    WHERE (c.customer_email) = (%(email)s) """
+    db.execute(sql, {'email':email})
+    result = db.fetchone()
+    if(result):
+        #usuario existe asi que va a haber un error
+        return jsonify({'message':'duplicate username'}), 403
+  
+    else:
+        sql = """INSERT INTO  tblcustomer (id_customer,name_customer,customer_phone,customer_email,password)
+                 VALUES (DEFAULT, %(name)s,%(phone)s,%(email)s,%(passw)s)             
+        """
+        try:
+            db.execute(sql, {'email':email, 'passw':passwHash, 'name':name, 'phone':phone})
+            conn.commit()
+            response = {"message":"success"}
+            return jsonify(response), 200
+        except Exception as e:
+            print("error at /registrar:")
+            print (e)
+            connectDatabase()
 
 
 @app.route('/api/v1/consultar', methods=['GET']) #Consultar Cuentas (clientes y TCred)
