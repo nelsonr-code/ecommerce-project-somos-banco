@@ -10,6 +10,7 @@
 
 # production
 /build
+/API/virtualenv/*
 
 # misc
 .DS_Store
